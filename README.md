@@ -128,4 +128,4 @@ Keyboard constants are unchanged, but mouse and gamepad have been changed to the
 
 ### LICENSE
 
-You can do whatever you want with this. See the [LICENSE]().
+You can do whatever you want with this. See the [LICENSE](https://github.com/adonaac/thomas/blob/master/LICENSE).
