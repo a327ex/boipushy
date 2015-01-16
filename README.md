@@ -90,7 +90,7 @@ input:unbind('mouse1')
 
 ### Key/mouse/gamepad Constants
 
-Keyboard constants are unchanged, but mouse and gamepad have been changed to the following:
+Keyboard constants are unchanged from [here](https://www.love2d.org/wiki/KeyConstant), but mouse and gamepad have been changed to the following:
 
 ```lua
 -- Mouse
