@@ -6,7 +6,7 @@ enabling pressed/released checks outside of LÖVE's callbacks and taking care of
 ## Usage
 
 The [module](https://github.com/adonaac/thomas/blob/master/Input.lua) and the 
-[gamecontrollerdb.txt](https://github.com/adonaac/thomas/blob/master/gamecontrollerdb.txt) file should be dropped 
+[gamecontrollerdb.txt](https://github.com/adonaac/thomas/blob/master/gamecontrollerdb.txt) files should be dropped 
 on your project and required like so:
 
 ```lua
