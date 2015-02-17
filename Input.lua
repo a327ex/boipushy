@@ -7,11 +7,15 @@ local current_path = ''
 local current_index = 0
 while #current_path ~= #input_path do
     local _, index, temp = input_path:find( '(.-)%.', current_index )
+    if not index then current_path = input_path break end
     if love.filesystem.exists( current_path .. temp ) then -- Allow for . in folder names (even though this isn't currently allowed using require...)
         current_path = current_path .. temp .. '/'
         current_index = index + 1
     end
 end
+
+local mappings = love.filesystem.read(current_path .. 'gamecontrollerdb.txt')
+if love.joystick.loadGamepadMappings then love.joystick.loadGamepadMappings(mappings) end
 
 local all_keys = {
     "space", "return", "escape", "backspace", "tab", "space", "!", "\"", "#", "$", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", "0", "1", "2", "3", "4",
