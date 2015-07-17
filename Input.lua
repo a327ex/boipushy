@@ -2,6 +2,9 @@ local input_path = tostring(...):sub(1, -6)
 local Input = {}
 Input.__index = Input
 
+local major, minor, rev = love.getVersion()
+love_version = major .. '.' .. minor .. '.' .. rev
+
 -- Replace '.' if using `require 'Path.to.lib'`
 local current_path = ''
 local current_index = 0
@@ -14,8 +17,8 @@ while #current_path ~= #input_path do
     end
 end
 
-local all_keys = {
-    "space", "return", "escape", "backspace", "tab", "space", "!", "\"", "#", "$", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", "0", "1", "2", "3", "4",
+Input.all_keys = {
+    " ", "return", "escape", "backspace", "tab", "space", "!", "\"", "#", "$", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", "0", "1", "2", "3", "4",
     "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "", "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
     "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "capslock", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12", "printscreen",
     "scrolllock", "pause", "insert", "home", "pageup", "delete", "end", "pagedown", "right", "left", "down", "up", "numlock", "kp/", "kp*", "kp-", "kp+", "kpenter",
@@ -35,7 +38,6 @@ function Input.new()
     self.prev_state = {}
     self.state = {}
 
-
     -- self.binds[action] has a list of keys that correspond to this action
     self.binds = {}
 
@@ -45,7 +47,22 @@ function Input.new()
     -- Gamepads... currently only supports 1 gamepad, adding support for more is not that hard, just lazy.
     self.joysticks = love.joystick.getJoysticks()
 
+    -- Register callbacks automagically
+    local callbacks = {'keypressed', 'keyreleased', 'mousepressed', 'mousereleased', 'gamepadpressed', 'gamepadreleased', 'gamepadaxis', 'wheelmoved'}
+    local old_functions = {}
+    local empty_function = function() end
+    for _, f in ipairs(callbacks) do
+        old_functions[f] = love[f] or empty_function
+        love[f] = function(...)
+            old_functions[f](...)
+            self[f](self, ...)
+        end
+    end
+
     return setmetatable(self, Input)
+end
+
+function Input:registerEvents()
 end
 
 function Input:bind(key, action)
@@ -63,7 +80,7 @@ function Input:pressed(action)
         end
 
     else
-        for _, key in ipairs(all_keys) do
+        for _, key in ipairs(Input.all_keys) do
             if self.state[key] and not self.prev_state[key] then
                 if self.functions[key] then
                     self.functions[key]()
@@ -81,7 +98,10 @@ function Input:released(action)
     end
 end
 
-local key_to_button = {mouse1 = 'l', mouse2 = 'r', mouse3 = 'm', wheelup = 'wu', wheeldown = 'wd', mouse4 = 'x1', mouse5 = 'x2'}
+local key_to_button = nil
+if love_version == '0.9.1' or love_version == '0.9.2' then
+    key_to_button = {mouse1 = 'l', mouse2 = 'r', mouse3 = 'm', wheelup = 'wu', wheeldown = 'wd', mouse4 = 'x1', mouse5 = 'x2'}
+else key_to_button = {mouse1 = '1', mouse2 = '2', mouse3 = '3', mouse4 = '4', mouse5 = '5'} end
 local gamepad_to_button = {fdown = 'a', fup = 'y', fleft = 'x', fright = 'b', back = 'back', guide = 'guide', start = 'start',
                            leftstick = 'leftstick', rightstick = 'rightstick', l1 = 'leftshoulder', r1 = 'rightshoulder',
                            dpup = 'dpup', dpdown = 'dpdown', dpleft = 'dpleft', dpright = 'dpright'}
@@ -89,7 +109,7 @@ local axis_to_button = {leftx = 'leftx', lefty = 'lefty', rightx = 'rightx', rig
 
 function Input:down(action)
     for _, key in ipairs(self.binds[action]) do
-        if (love.keyboard.isDown(key) or love.mouse.isDown(key_to_button[key] or '')) then
+        if (love.keyboard.isDown(key) or love.mouse.isDown(key_to_button[key] or 0)) then
             return true
         end
         
@@ -141,14 +161,22 @@ function Input:keyreleased(key)
     self.state[key] = false
 end
 
-local button_to_key = {l = 'mouse1', r = 'mouse2', m = 'mouse3', wu = 'wheelup', wd = 'wheeldown', x1 = 'mouse4', x2 = 'mouse5'}
+local button_to_key = nil
+if love_version == '0.9.1' or love_version == '0.9.2' then
+    button_to_key = {l = 'mouse1', r = 'mouse2', m = 'mouse3', wu = 'wheelup', wd = 'wheeldown', x1 = 'mouse4', x2 = 'mouse5'}
+else button_to_key = {[1] = 'mouse1', [2] = 'mouse2', [3] = 'mouse3', [4] = 'mouse4', [5] = 'mouse5'} end
 
-function Input:mousepressed(button)
+function Input:mousepressed(x, y, button)
     self.state[button_to_key[button]] = true
 end
 
-function Input:mousereleased(button)
+function Input:mousereleased(x, y, button)
     self.state[button_to_key[button]] = false
+end
+
+function Input:wheelmoved(x, y)
+    if y > 0 then self.state['wheelup'] = true
+    elseif y < 0 then self.state['wheeldown'] = true end
 end
 
 local button_to_gamepad = {a = 'fdown', y = 'fup', x = 'fleft', b = 'fright', back = 'back', guide = 'guide', start = 'start',
