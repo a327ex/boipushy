@@ -62,9 +62,6 @@ function Input.new()
     return setmetatable(self, Input)
 end
 
-function Input:registerEvents()
-end
-
 function Input:bind(key, action)
     if type(action) == 'function' then self.functions[key] = action; return end
     if not self.binds[action] then self.binds[action] = {} end
