@@ -1,4 +1,4 @@
-local input_path = tostring(...):sub(1, -6)
+local input_path = (...):match('(.-)[^%.]+$') .. '.'
 local Input = {}
 Input.__index = Input
 
