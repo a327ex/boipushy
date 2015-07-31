@@ -5,18 +5,6 @@ Input.__index = Input
 local major, minor, rev = love.getVersion()
 love_version = major .. '.' .. minor .. '.' .. rev
 
--- Replace '.' if using `require 'Path.to.lib'`
-local current_path = ''
-local current_index = 0
-while #current_path ~= #input_path do
-    local _, index, temp = input_path:find( '(.-)%.', current_index )
-    if not index then current_path = input_path break end
-    if love.filesystem.exists( current_path .. temp ) then -- Allow for . in folder names (even though this isn't currently allowed using require...)
-        current_path = current_path .. temp .. '/'
-        current_index = index + 1
-    end
-end
-
 Input.all_keys = {
     " ", "return", "escape", "backspace", "tab", "space", "!", "\"", "#", "$", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", "0", "1", "2", "3", "4",
     "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "", "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
