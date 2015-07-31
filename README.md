@@ -17,7 +17,7 @@ An object is returned and from that you can create multiple input objects.
 
 ### Creating an input object
 
-For each input object you need to add it to some of LÖVE's callbacks:
+For each input object you need to only update it. Remember to place the update as the very last thing in your update functions or pressed/released checks won't work properly.
 
 ```lua
 function love.load()
@@ -28,35 +28,8 @@ function love.update(dt)
   -- add your stuff here!!!
   -- input call must come after everything
   -- or pressed/released on update won't work
+  
   input:update(dt)
-end
-
-function love.keypressed(key)
-  input:keypressed(key)
-end
-
-function love.keyreleased(key)
-  input:keyreleased(key)
-end
-
-function love.mousepressed(x, y, button)
-  input:mousepressed(button)
-end
-
-function love.mousereleased(x, y, button)
-  input:mousereleased(button)
-end
-
-function love.gamepadpressed(joystick, button)
-  input:gamepadpressed(joystick, button)
-end
-
-function love.gamepadreleased(joystick, button)
-  input:gamepadreleased(joystick, button)
-end
-
-function love.gamepadaxis(joystick, axis, value)
-  input:gamepadaxis(joystick, axis, value)
 end
 ```
 
