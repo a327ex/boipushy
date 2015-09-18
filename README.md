@@ -5,15 +5,11 @@ enabling pressed/released checks outside of LÖVE's callbacks and taking care of
 
 ## Usage
 
-Require the [module](https://github.com/adonaac/thomas/blob/master/Input.lua): 
-
 ```lua
 Input = require 'Input'
 ```
 
 ### Creating an input object
-
-For each input object you need to create it:
 
 ```lua
 function love.load()
