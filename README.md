@@ -5,31 +5,19 @@ enabling pressed/released checks outside of LÖVE's callbacks and taking care of
 
 ## Usage
 
-The [module](https://github.com/adonaac/thomas/blob/master/Input.lua) and the 
-[gamecontrollerdb.txt](https://github.com/adonaac/thomas/blob/master/gamecontrollerdb.txt) files should be dropped 
-on your project and required like so:
+Require the [module](https://github.com/adonaac/thomas/blob/master/Input.lua): 
 
 ```lua
 Input = require 'Input'
 ```
 
-An object is returned and from that you can create multiple input objects.
-
 ### Creating an input object
 
-For each input object you need to only update it. Remember to place the update as the very last thing in your update functions or pressed/released checks won't work properly.
+For each input object you need to create it:
 
 ```lua
 function love.load()
   input = Input()
-end
-
-function love.update(dt)
-  -- add your stuff here!!!
-  -- input call must come after everything
-  -- or pressed/released on update won't work
-  
-  input:update(dt)
 end
 ```
 
@@ -48,8 +36,6 @@ function love.update(dt)
   if input:pressed('print') then print(1) end
   if input:released('print') then print(2) end
   if input:down('left_click') then print('left click down') end
-
-  input:update(dt)
 end
 ```
 

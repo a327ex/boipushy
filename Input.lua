@@ -36,7 +36,7 @@ function Input.new()
     self.joysticks = love.joystick.getJoysticks()
 
     -- Register callbacks automagically
-    local callbacks = {'keypressed', 'keyreleased', 'mousepressed', 'mousereleased', 'gamepadpressed', 'gamepadreleased', 'gamepadaxis', 'wheelmoved'}
+    local callbacks = {'keypressed', 'keyreleased', 'mousepressed', 'mousereleased', 'gamepadpressed', 'gamepadreleased', 'gamepadaxis', 'wheelmoved', 'update'}
     local old_functions = {}
     local empty_function = function() end
     for _, f in ipairs(callbacks) do
@@ -131,7 +131,7 @@ local copy = function(t1)
     return out
 end
 
-function Input:update(dt)
+function Input:update()
     self:pressed()
     self.prev_state = copy(self.state)
     self.state['wheelup'] = false
