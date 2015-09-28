@@ -22,6 +22,8 @@ Input.all_keys = {
 function Input.new()
     local self = {}
 
+    if not love.load then error("Input instance must be created inside love.load") end
+
     -- Previous and current key down state
     self.prev_state = {}
     self.state = {}
