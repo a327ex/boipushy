@@ -184,4 +184,4 @@ function Input:gamepadaxis(joystick, axis, newvalue)
     self.state[button_to_axis[axis]] = newvalue
 end
 
-return setmetatable({new = new}, {__call = function(_, ...) return Input.new(...) end})
+return setmetatable({}, {__call = function(_, ...) return Input.new(...) end})
