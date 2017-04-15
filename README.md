@@ -20,7 +20,9 @@ end
 ### Binding keys to actions
 
 `bind(key[string], action[string])`
+
 `bind(key[string], action[function])`
+
 
 ```lua
 input:bind('1', 'print')
@@ -31,7 +33,9 @@ input:bind('mouse1', 'left_click')
 ### Checking if an action is pressed/released/down
 
 `pressed(action[string])`
+
 `released(action[string])`
+
 `down(action[string])`
 
 ```lua
@@ -45,6 +49,7 @@ end
 ### Triggering events on intervals if an action is held down
 
 `pressRepeat(action[string], interval[number])`
+
 `pressRepeat(action[string], delay[number], interval[number])`
 
 ```lua
