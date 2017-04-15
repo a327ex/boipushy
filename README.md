@@ -19,6 +19,9 @@ end
 
 ### Binding keys to actions
 
+`bind(key[string], action[string])`
+`bind(key[string], action[function])`
+
 ```lua
 input:bind('1', 'print')
 input:bind('s', function() print(2) end)
@@ -26,6 +29,10 @@ input:bind('mouse1', 'left_click')
 ```
 
 ### Checking if an action is pressed/released/down
+
+`pressed(action[string])`
+`released(action[string])`
+`down(action[string])`
 
 ```lua
 function love.update(dt)
@@ -35,7 +42,23 @@ function love.update(dt)
 end
 ```
 
+### Triggering events on intervals if an action is held down
+
+`pressRepeat(action[string], interval[number])`
+`pressRepeat(action[string], delay[number], interval[number])`
+
+```lua
+function love.update(dt)
+  -- Print a random number every 0.5 seconds if the 'print' action key is held down
+  if input:pressRepeat('print', 0.5) then print(love.math.random()) end
+  -- Print a random number every 0.5 seconds after a 2 seconds delay if the 'print' action key is held down
+  if input:pressRepeat('print', 2, 0.5) then print(love.math.random()) end
+end
+```
+
 ### Unbinding a key
+
+`unbind(key[string])`
 
 ```lua
 input:unbind('1')
