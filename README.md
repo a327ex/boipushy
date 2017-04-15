@@ -39,11 +39,22 @@ end
 
 ```lua
 function love.update(dt)
-  -- Print a random number every 0.5 seconds if the 'print' action key is held down
+  -- Print a random number every 0.5 seconds from when the 'print' action key was held down
   if input:pressRepeat('print', 0.5) then print(love.math.random()) end
   
-  -- Print a random number every 0.5 seconds after a 2 seconds delay if the 'print' action key is held down
+  -- Print a random number every 0.5 seconds after a 2 seconds delay 
+  -- from when the 'print' action key was held down
   if input:pressRepeat('print', 2, 0.5) then print(love.math.random()) end
+  
+  -- Both versions of this function will return true immediately at the moment the key is held down once,
+  -- so the output from the second call would be something like:
+  -- >> random number
+  -- wait 2 seconds
+  -- >> random number
+  -- wait 0.5 seconds
+  -- >> random number
+  -- wait 0.5 seconds
+  -- ...
 end
 ```
 
