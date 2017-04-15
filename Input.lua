@@ -68,11 +68,20 @@ function Input:pressed(action)
     end
 end
 
-function Input:pressRepeat(action, delay, interval)
+function Input:pressRepeat(action, interval, delay)
     if action and delay and interval then
         for _, key in ipairs(self.binds[action]) do
             if self.state[key] and not self.prev_state[key] then
                 self.repeat_state[key] = {pressed_time = love.timer.getTime(), delay = delay, interval = interval, delay_stage = true}
+                return true
+            elseif self.repeat_state[key] and self.repeat_state[key].pressed then
+                return true
+            end
+        end
+    elseif action and interval and not delay then
+        for _, key in ipairs(self.binds[action]) do
+            if self.state[key] and not self.prev_state[key] then
+                self.repeat_state[key] = {pressed_time = love.timer.getTime(), delay = 0, interval = interval, delay_stage = false}
                 return true
             elseif self.repeat_state[key] and self.repeat_state[key].pressed then
                 return true
