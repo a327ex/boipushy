@@ -17,7 +17,7 @@ function love.load()
 end
 ```
 
-You can create multiple input objects even though if you can get by most of the time with just a single global one. If your game supports multiple players locally then it's probably a good idea to create a different input object for each player, although it's not necessary as long as bindings between players don't collide if you only have one.
+You can create multiple input objects even though you can get by most of the time with just a single global one. If your game supports multiple players locally then it's probably a good idea to create a different input object for each player, although it's not necessary as long as bindings between players don't collide.
 
 ### Binding keys to actions
 
