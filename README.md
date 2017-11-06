@@ -19,6 +19,8 @@ end
 
 You can create multiple input objects even though you can get by most of the time with just a single global one. If your game supports multiple players locally then it's probably a good idea to create a different input object for each player, although it's not necessary as long as bindings between players don't collide.
 
+<br>
+
 ### Binding keys to actions
 
 ```lua
@@ -27,12 +29,14 @@ input:bind('1', 'print')
 
 The example above binds the `'1'` key to the `'print'` action. This means that in our code we can check for the `'print'` action being pressed with `input:pressed('print')`, for instance, and that function would return true on the frame that we pressed the `'1'` key on the keyboard. This layer of indirection between keyboard and action allows our gameplay focus to only speak in terms of actions, which means that it doesn't have to care about which method of input is being used or if the key bindings were changed to something else.
 
-```
+```lua
 input:bind('s', function() print(2) end)
 input:bind('mouse1', 'left_click')
 ```
 
 On top of action strings we can also bind anonymous functions. In this case, whenever we press the `'s'` key on the keyboard `2` would be printed to the console. Additionally, we can bind mouse and gamepad buttons in the same.
+
+<br>
 
 ### Checking if an action is pressed/released/down
 
@@ -46,13 +50,15 @@ end
 
 `pressed`, `released` and `down` are the main functions of the library. Both `pressed` and `released` only return true on the frame when that event happened, while `down` returns true on every frame that the key bound to the action is being held down.
 
+<br>
+
 ### Triggering events on intervals if an action is held down
 
 The `down` function can accept additional arguments to trigger events on an interval basis. For instance:
 
 ```lua
 function love.update(dt)
-  if input:pressRepeat('print', 0.5) then print(love.math.random()) end
+  if input:down('print', 0.5) then print(love.math.random()) end
 end
 ```
 
@@ -62,11 +68,13 @@ Additionally, a third argument can be passed which represents a delay for the ev
 
 ```lua
 function love.update(dt)
-  if input:pressRepeat('print', 0.5, 2) then print(love.math.random()) end
+  if input:down('print', 0.5, 2) then print(love.math.random()) end
 end
 ```
 
 The example above will print a random number every 0.5 seconds after 2 seconds have passed from when the `'print'` action key was held down. This behavior can be seen in action whenever you're typing something and you hold a key down, for instance. If you hold the `x` key down, first `x` will be typed once, there will be a small amount of time (like say 0.3s) where nothing happens, and then a lot of `x` will come following really fast. 
+
+<br>
 
 ### Unbinding a key
 
@@ -79,6 +87,8 @@ input:unbind('mouse1')
 Unbinding keys simply disconnects them from their actions. You can also use `input:unbindAll()` to unbind all bound keys.
 
 ### Key/mouse/gamepad Constants
+
+<br>
 
 Keyboard constants are unchanged from [here](https://www.love2d.org/wiki/KeyConstant), but mouse and gamepad have been changed to the following:
 
