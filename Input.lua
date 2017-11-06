@@ -24,6 +24,7 @@ function Input.new()
     self.binds = {}
     self.functions = {}
     self.repeat_state = {}
+    self.sequences = {}
 
     -- Gamepads... currently only supports 1 gamepad, adding support for more is not that hard, just lazy.
     self.joysticks = love.joystick.getJoysticks()
@@ -68,32 +69,56 @@ function Input:pressed(action)
     end
 end
 
-function Input:pressRepeat(action, interval, delay)
-    if action and delay and interval then
-        for _, key in ipairs(self.binds[action]) do
-            if self.state[key] and not self.prev_state[key] then
-                self.repeat_state[key] = {pressed_time = love.timer.getTime(), delay = delay, interval = interval, delay_stage = true}
-                return true
-            elseif self.repeat_state[key] and self.repeat_state[key].pressed then
-                return true
-            end
-        end
-    elseif action and interval and not delay then
-        for _, key in ipairs(self.binds[action]) do
-            if self.state[key] and not self.prev_state[key] then
-                self.repeat_state[key] = {pressed_time = love.timer.getTime(), delay = 0, interval = interval, delay_stage = false}
-                return true
-            elseif self.repeat_state[key] and self.repeat_state[key].pressed then
-                return true
-            end
-        end
-    end
-end
-
 function Input:released(action)
     for _, key in ipairs(self.binds[action]) do
         if self.prev_state[key] and not self.state[key] then
             return true
+        end
+    end
+end
+
+function Input:sequence(...)
+    local sequence = {...}
+    if #sequence <= 1 then error("Use :pressed instead if you only need to check 1 action") end
+    if type(sequence[#sequence]) ~= 'string' then error("The last argument must be an action") end
+    if #sequence % 2 == 0 then error("The number of arguments passed in must be odd") end
+
+    local sequence_key = ''
+    for _, seq in ipairs(sequence) do sequence_key = sequence_key .. tostring(seq) end
+
+    if not self.sequences[sequence_key] then
+        self.sequences[sequence_key] = {sequence = sequence, current_index = 1}
+
+    else
+        if self.sequences[sequence_key].current_index == 1 then
+            local action = self.sequences[sequence_key].sequence[self.sequences[sequence_key].current_index]
+            for _, key in ipairs(self.binds[action]) do
+                if self.state[key] and not self.prev_state[key] then
+                    self.sequences[sequence_key].last_pressed = love.timer.getTime()
+                    self.sequences[sequence_key].current_index = self.sequences[sequence_key].current_index + 1
+                end
+            end
+
+        else
+            local delay = self.sequences[sequence_key].sequence[self.sequences[sequence_key].current_index]
+            local action = self.sequences[sequence_key].sequence[self.sequences[sequence_key].current_index + 1]
+
+            if (love.timer.getTime() - self.sequences[sequence_key].last_pressed) > delay then self.sequences[sequence_key] = nil end
+            for _, key in ipairs(self.binds[action]) do
+                if self.state[key] and not self.prev_state[key] then
+                    if (love.timer.getTime() - self.sequences[sequence_key].last_pressed) <= delay then
+                        if self.sequences[sequence_key].current_index + 1 == #self.sequences[sequence_key].sequence then
+                            self.sequences[sequence_key] = nil
+                            return true
+                        else
+                            self.sequences[sequence_key].last_pressed = love.timer.getTime()
+                            self.sequences[sequence_key].current_index = self.sequences[sequence_key].current_index + 2
+                        end
+                    else
+                        self.sequences[sequence_key] = nil
+                    end
+                end
+            end
         end
     end
 end
@@ -104,19 +129,41 @@ local gamepad_to_button = {fdown = 'a', fup = 'y', fleft = 'x', fright = 'b', ba
                            dpup = 'dpup', dpdown = 'dpdown', dpleft = 'dpleft', dpright = 'dpright'}
 local axis_to_button = {leftx = 'leftx', lefty = 'lefty', rightx = 'rightx', righty = 'righty', l2 = 'triggerleft', r2 = 'triggerright'}
 
-function Input:down(action)
-    for _, key in ipairs(self.binds[action]) do
-        if (love.keyboard.isDown(key) or love.mouse.isDown(key_to_button[key] or 0)) then
-            return true
+function Input:down(action, interval, delay)
+    if action and delay and interval then
+        for _, key in ipairs(self.binds[action]) do
+            if self.state[key] and not self.prev_state[key] then
+                self.repeat_state[key] = {pressed_time = love.timer.getTime(), delay = delay, interval = interval, delay_stage = true}
+                return true
+            elseif self.repeat_state[key] and self.repeat_state[key].pressed then
+                return true
+            end
         end
-        
-        -- Supports only 1 gamepad, add more later...
-        if self.joysticks[1] then
-            if axis_to_button[key] then
-                return self.state[key]
-            elseif gamepad_to_button[key] then
-                if self.joysticks[1]:isGamepadDown(gamepad_to_button[key]) then
-                    return true
+
+    elseif action and interval and not delay then
+        for _, key in ipairs(self.binds[action]) do
+            if self.state[key] and not self.prev_state[key] then
+                self.repeat_state[key] = {pressed_time = love.timer.getTime(), delay = 0, interval = interval, delay_stage = false}
+                return true
+            elseif self.repeat_state[key] and self.repeat_state[key].pressed then
+                return true
+            end
+        end
+
+    elseif action and not interval and not delay then
+        for _, key in ipairs(self.binds[action]) do
+            if (love.keyboard.isDown(key) or love.mouse.isDown(key_to_button[key] or 0)) then
+                return true
+            end
+            
+            -- Supports only 1 gamepad, add more later...
+            if self.joysticks[1] then
+                if axis_to_button[key] then
+                    return self.state[key]
+                elseif gamepad_to_button[key] then
+                    if self.joysticks[1]:isGamepadDown(gamepad_to_button[key]) then
+                        return true
+                    end
                 end
             end
         end
@@ -149,7 +196,6 @@ function Input:update()
     self.state['wheelup'] = false
     self.state['wheeldown'] = false
 
-    -- pressRepeat
     for k, v in pairs(self.repeat_state) do
         if v then
             v.pressed = false 
