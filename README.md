@@ -76,6 +76,22 @@ The example above will print a random number every 0.5 seconds after 2 seconds h
 
 <br>
 
+### Sequences
+
+The `sequence` function allows you to check for sequences of buttons pressed within an interval of each other. For instance:
+
+```lua
+function love.update(dt)
+  if input:sequence('right', 0.5, 'right') then
+    -- dash right
+  end
+end
+```
+
+In the example above the `sequence` function will return true when the `'right'` action is pressed twice, and the second key press happened within 0.5s of the first. This is useful for simple things like dashing, but also for more complex sequences like combos. This function must be started and finished with an action, and between each action there should be the interval limit.
+
+<br>
+
 ### Unbinding a key
 
 ```lua
@@ -86,9 +102,9 @@ input:unbind('mouse1')
 
 Unbinding keys simply disconnects them from their actions. You can also use `input:unbindAll()` to unbind all bound keys.
 
-### Key/mouse/gamepad Constants
-
 <br>
+
+### Key/mouse/gamepad Constants
 
 Keyboard constants are unchanged from [here](https://www.love2d.org/wiki/KeyConstant), but mouse and gamepad have been changed to the following:
 
