@@ -146,6 +146,8 @@ Keyboard constants are unchanged from [here](https://www.love2d.org/wiki/KeyCons
 'righty'
 ```
 
+<br>
+
 ### LICENSE
 
 You can do whatever you want with this. See the [LICENSE](https://github.com/adonaac/thomas/blob/master/LICENSE).
