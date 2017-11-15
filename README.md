@@ -1,7 +1,7 @@
 # boipushy
 
 An input module for LÖVE. Simplifies input handling by abstracting them away to actions,
-enabling pressed/released checks outside of LÖVE's callbacks and taking care of gamepad input as well.
+enabling pressed/released checks outside of LÖVE's callbacks and taking care of gamepad input as well. :)
 
 <br>
 
