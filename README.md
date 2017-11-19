@@ -150,4 +150,4 @@ Keyboard constants are unchanged from [here](https://www.love2d.org/wiki/KeyCons
 
 ### LICENSE
 
-You can do whatever you want with this. See the [LICENSE](https://github.com/adonaac/thomas/blob/master/LICENSE).
+You can do whatever you want with this. See the license at the top of the main file.
