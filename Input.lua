@@ -200,10 +200,14 @@ function Input:unbind(key)
             end
         end
     end
+    if self.functions[key] then
+        self.functions[key] = nil
+    end
 end
 
 function Input:unbindAll()
     self.binds = {}
+    self.functions = {}
 end
 
 local copy = function(t1)
