@@ -251,7 +251,10 @@ function Input:keyreleased(key)
     self.repeat_state[key] = false
 end
 
-local button_to_key = {[1] = 'mouse1', [2] = 'mouse2', [3] = 'mouse3', [4] = 'mouse4', [5] = 'mouse5'}
+local button_to_key = {
+    [1] = 'mouse1', [2] = 'mouse2', [3] = 'mouse3', [4] = 'mouse4', [5] = 'mouse5',
+    ['l'] = 'mouse1', ['r'] = 'mouse2', ['m'] = 'mouse3', ['x1'] = 'mouse4', ['x2'] = 'mouse5'
+}
 
 function Input:mousepressed(x, y, button)
     self.state[button_to_key[button]] = true
